@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CheckboxInput can be rendered 1`] = `"<input type="checkbox" name="extra_cheese" id="id_extra_cheese" aria-describedby="id_extra_cheese-help-text">"`;
+
+exports[`RadioSelect can be rendered 1`] = `
+"<div id="id_color" aria-describedby="id_color-help-text">
+        <div>
+          <label for="id_color_0">
+            <input type="radio" name="color" value="red" id="id_color_0">
+            Red
+          </label>
+        </div>
+        <div>
+          <label for="id_color_1">
+            <input type="radio" name="color" value="green" id="id_color_1">
+            Green
+          </label>
+        </div>
+        <div>
+          <label for="id_color_2">
+            <input type="radio" name="color" value="blue" id="id_color_2">
+            Blue
+          </label>
+        </div>
+      </div>"
+`;
+
+exports[`Select can be rendered 1`] = `
+"<select name="color" id="id_color" aria-describedby="id_color-help-text">
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+      </select>"
+`;
+
+exports[`Widget can be rendered 1`] = `"<input type="text" name="name" id="id_name" aria-describedby="id_name-help-text">"`;
+
+exports[`Widget can be rendered when input is not a top-level element 1`] = `"<div aria-describedby="id_name-help-text"><input type="text" name="name" id="id_name"></div>"`;
+
+exports[`multiple choice RadioSelect can be rendered 1`] = `
+"<div id="id_color" aria-describedby="id_color-help-text">
+        <div>
+          <label for="id_color_0">
+            <input type="checkbox" name="color" value="red" id="id_color_0">
+            Red
+          </label>
+        </div>
+        <div>
+          <label for="id_color_1">
+            <input type="checkbox" name="color" value="green" id="id_color_1">
+            Green
+          </label>
+        </div>
+        <div>
+          <label for="id_color_2">
+            <input type="checkbox" name="color" value="blue" id="id_color_2">
+            Blue
+          </label>
+        </div>
+      </div>"
+`;
+
+exports[`multiple choice Select can be rendered 1`] = `
+"<select name="color" id="id_color" multiple="" aria-describedby="id_color-help-text">
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+      </select>"
+`;

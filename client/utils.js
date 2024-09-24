@@ -5,7 +5,7 @@ export const runScript = (script) => {
   if (!script.type || script.type === 'application/javascript') {
     const newScript = document.createElement('script');
     Array.from(script.attributes).forEach((key) =>
-    newScript.setAttribute(key.nodeName, key.nodeValue || ''),
+      newScript.setAttribute(key.nodeName, key.nodeValue || ''),
     );
     newScript.text = script.text;
     script.replaceWith(newScript);
