@@ -1,32 +1,10 @@
-const runScript = (script) => {
-  /**
-   * Runs the given script element.
-   */
-  if (!script.type || script.type === 'application/javascript') {
-    const newScript = document.createElement('script');
-    Array.from(script.attributes).forEach((key) =>
-      newScript.setAttribute(key.nodeName, key.nodeValue || ''),
-    );
-    newScript.text = script.text;
-    script.replaceWith(newScript);
-  }
-};
-
-const runInlineScripts = (element) => {
-  /**
-   * Runs any inline scripts contained within the given DOM element or fragment.
-   */
-  const selector = 'script:not([src])';
-  if (element instanceof HTMLElement && element.matches(selector)) {
-    runScript(element);
-  } else {
-    const scripts = element.querySelectorAll(selector);
-    scripts.forEach(runScript);
-  }
-};
+import { runInlineScripts } from './utils';
 
 
-class BoundWidget {
+export const adapters = {};
+
+
+export class BoundWidget {
   constructor(
     elementOrNodeList,
     name,
@@ -91,7 +69,7 @@ class BoundWidget {
   }
 }
 
-class Widget {
+export class Widget {
   constructor(html, idPattern) {
     this.html = html;
     this.idPattern = idPattern;
@@ -143,9 +121,10 @@ class Widget {
     );
   }
 }
-window.telepath.register('telepath.forms.Widget', Widget);
+adapters['telepath.forms.Widget'] = Widget;
 
-class BoundCheckboxInput extends BoundWidget {
+
+export class BoundCheckboxInput extends BoundWidget {
   getValue() {
     return this.input.checked;
   }
@@ -159,12 +138,13 @@ class BoundCheckboxInput extends BoundWidget {
   }
 }
 
-class CheckboxInput extends Widget {
+export class CheckboxInput extends Widget {
   boundWidgetClass = BoundCheckboxInput;
 }
-window.telepath.register('telepath.forms.CheckboxInput', CheckboxInput);
+adapters['telepath.forms.CheckboxInput'] = CheckboxInput;
 
-class BoundRadioSelect {
+
+export class BoundRadioSelect {
   constructor(element, name, idForLabel, initialState) {
     this.element = element;
     this.name = name;
@@ -203,12 +183,13 @@ class BoundRadioSelect {
   }
 }
 
-class RadioSelect extends Widget {
+export class RadioSelect extends Widget {
   boundWidgetClass = BoundRadioSelect;
 }
-window.telepath.register('telepath.forms.RadioSelect', RadioSelect);
+adapters['telepath.forms.RadioSelect'] = RadioSelect;
 
-class BoundSelect extends BoundWidget {
+
+export class BoundSelect extends BoundWidget {
   getTextLabel() {
     return Array.from(this.input.selectedOptions)
       .map((option) => option.text)
@@ -236,14 +217,15 @@ class BoundSelect extends BoundWidget {
   }
 }
 
-class Select extends Widget {
+export class Select extends Widget {
   boundWidgetClass = BoundSelect;
 }
-window.telepath.register('telepath.forms.Select', Select);
+adapters['telepath.forms.Select'] = Select;
 
-class ValidationError {
+
+export class ValidationError {
   constructor(messages) {
     this.messages = messages;
   }
 }
-window.telepath.register('telepath.forms.ValidationError', ValidationError);
+adapters['telepath.forms.ValidationError'] = ValidationError;
