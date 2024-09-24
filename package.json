@@ -1,0 +1,16 @@
+{
+  "name": "telepath-forms",
+  "version": "0.1.0",
+  "description": "Integration between Django forms and JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config ./client/webpack.config.js --mode production"
+  },
+  "author": "Matt Westcott",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

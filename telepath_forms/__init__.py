@@ -25,7 +25,7 @@ class WidgetAdapter(Adapter):
 
     class Media:
         js = [
-            "telepath_forms/js/widgets.js",
+            "telepath_forms/js/telepath-forms.js",
         ]
 
 
@@ -65,7 +65,7 @@ class ValidationErrorAdapter(Adapter):
 
     class Media:
         js = [
-            "telepath_forms/js/widgets.js",
+            "telepath_forms/js/telepath-forms.js",
         ]
 
 
