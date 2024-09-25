@@ -53,6 +53,16 @@ describe('Widget', () => {
     expect(boundWidget.getValue()).toBe("Alice");
     expect(boundWidget.getState()).toBe("Alice");
   });
+
+  it('can be retrieved for an existing form element', () => {
+    const widget = new Widget(
+      '<input type="text" name="__NAME__" id="__ID__">', "__ID__"
+    );
+
+    document.body.innerHTML = '<input type="text" name="name" id="id_name" value="Bob">';
+    const boundWidget = widget.getByName("name", document.body);
+    expect(boundWidget.getValue()).toBe("Bob");
+  });
 });
 
 describe('CheckboxInput', () => {
