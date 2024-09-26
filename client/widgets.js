@@ -1,4 +1,4 @@
-import { runInlineScripts } from './utils';
+import { runInlineScripts } from './utils.js';
 
 
 export const adapters = {};
