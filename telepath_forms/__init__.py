@@ -55,6 +55,26 @@ class SelectAdapter(WidgetAdapter):
 register(SelectAdapter(), forms.Select)
 
 
+class FormAdapter(Adapter):
+    js_constructor = "telepath.forms.Form"
+
+    def js_args(self, form):
+        return [
+            {
+                name: field.widget
+                for name, field in form.fields.items()
+            },
+        ]
+
+    class Media:
+        js = [
+            "telepath_forms/js/telepath-forms.js",
+        ]
+
+
+register(FormAdapter(), forms.Form)
+
+
 class ValidationErrorAdapter(Adapter):
     js_constructor = "telepath.forms.ValidationError"
 
