@@ -64,6 +64,7 @@ class FormAdapter(Adapter):
                 name: field.widget
                 for name, field in form.fields.items()
             },
+            form.prefix,
         ]
 
     class Media:
@@ -73,6 +74,24 @@ class FormAdapter(Adapter):
 
 
 register(FormAdapter(), forms.Form)
+
+
+class FormSetAdapter(Adapter):
+    js_constructor = "telepath.forms.FormSet"
+
+    def js_args(self, formset):
+        return [
+            formset.empty_form,
+            formset.prefix,
+        ]
+
+    class Media:
+        js = [
+            "telepath_forms/js/telepath-forms.js",
+        ]
+
+
+register(FormSetAdapter(), forms.BaseFormSet)
 
 
 class ValidationErrorAdapter(Adapter):
