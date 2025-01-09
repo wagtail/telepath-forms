@@ -5,3 +5,6 @@ dependencies = [
     "telepath>=0.3.1,<1",
 ]
 description = "Javascript definitions to allow client-side manipulation of Django forms"
+
+[tool.setuptools]
+packages = ["telepath_forms"]
