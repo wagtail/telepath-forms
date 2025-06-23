@@ -1,4 +1,4 @@
-import { runInlineScripts } from './utils.js';
+import { replacePlaceholder } from './utils.js';
 
 
 export const adapters = {};
@@ -83,33 +83,11 @@ export class Widget {
     const html = this.html.replace(/__NAME__/g, name).replace(/__ID__/g, id);
     const idForLabel = this.idPattern.replace(/__ID__/g, id);
 
-    /* write the HTML into a temp container to parse it into a node list */
-    const tempContainer = document.createElement('div');
-    tempContainer.innerHTML = html.trim();
-    const childNodes = Array.from(tempContainer.childNodes);
-
-    /* replace the placeholder with the new nodes */
-    placeholder.replaceWith(...childNodes);
-
-    const childElements = childNodes.filter(
-      (node) => node.nodeType === Node.ELEMENT_NODE,
-    );
-
-    /* execute any scripts in the new element(s) */
-    childElements.forEach((element) => {
-      runInlineScripts(element);
-    });
-
-    // Add any extra attributes we received to the first element of the widget
-    if (typeof options?.attributes === 'object') {
-      Object.entries(options.attributes).forEach(([key, value]) => {
-        childElements[0].setAttribute(key, value);
-      });
-    }
+    const element = replacePlaceholder(placeholder, html, options?.attributes)
 
     // eslint-disable-next-line new-cap
     const boundWidget = new this.boundWidgetClass(
-      childElements.length === 1 ? childElements[0] : childNodes,
+      element,
       name,
       idForLabel,
     );
