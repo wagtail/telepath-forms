@@ -1,4 +1,4 @@
-import { Form, FormSet } from "./forms";
+import { Field, Form, FormSet } from "./forms";
 import { Widget } from "./widgets";
 
 
@@ -10,8 +10,18 @@ beforeEach(() => {
 describe('Form', () => {
   it('can be bound', () => {
     const form = new Form({
-      name: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
-      email: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      name: new Field({
+        label: "Name",
+        helpText: "Enter your name",
+        required: true,
+        widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      }),
+      email: new Field({
+        label: "Email",
+        helpText: "Enter your email",
+        required: true,
+        widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      }),
     });
 
     document.body.innerHTML = `
@@ -28,8 +38,18 @@ describe('Form', () => {
 
   it('can be bound when a prefix is in use', () => {
     const form = new Form({
-      name: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
-      email: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      name: new Field({
+        label: "Name",
+        helpText: "Enter your name",
+        required: true,
+        widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      }),
+      email: new Field({
+        label: "Email",
+        helpText: "Enter your email",
+        required: true,
+        widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      }),
     }, "person");
 
     document.body.innerHTML = `
@@ -49,8 +69,18 @@ describe('Form', () => {
 describe('FormSet', () => {
   it('can be bound', () => {
     const form = new Form({
-      name: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
-      email: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      name: new Field({
+        label: "Name",
+        helpText: "Enter your name",
+        required: true,
+        widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      }),
+      email: new Field({
+        label: "Email",
+        helpText: "Enter your email",
+        required: true,
+        widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      }),
     }, "people-___prefix___");
     const formSet = new FormSet(form, "people");
 

@@ -1,5 +1,17 @@
 export const adapters = {};
 
+export class Field {
+  constructor(options = {}) {
+    this.label = options.label || '';
+    this.helpText = options.helpText || '';
+    this.required = options.required || false;
+    this.widget = options.widget || null;
+  }
+}
+
+adapters['telepath.forms.Field'] = Field;
+
+
 export class BoundForm {
   constructor(boundWidgets) {
     this.boundWidgets = boundWidgets;
@@ -23,17 +35,17 @@ export class BoundForm {
 }
 
 export class Form {
-  constructor(widgets, prefix) {
-    this.widgets = widgets;
+  constructor(fields, prefix) {
+    this.fields = fields;
     this.prefix = prefix;
   }
 
   bind(container, prefix) {
     const boundWidgets = {};
     prefix = prefix || this.prefix;
-    for (const [name, widget] of Object.entries(this.widgets)) {
+    for (const [name, field] of Object.entries(this.fields)) {
       const prefixedName = prefix ? `${prefix}-${name}` : name;
-      boundWidgets[name] = widget.getByName(prefixedName, container);
+      boundWidgets[name] = field.widget.getByName(prefixedName, container);
     }
     return new BoundForm(boundWidgets);
   }

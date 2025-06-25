@@ -6,6 +6,7 @@ and extract field values.
 
 from django import forms
 from django.core.exceptions import ValidationError
+from django.forms.utils import pretty_name
 
 from telepath import Adapter, register
 
@@ -55,15 +56,34 @@ class SelectAdapter(WidgetAdapter):
 register(SelectAdapter(), forms.Select)
 
 
+class FieldAdapter(Adapter):
+    js_constructor = "telepath.forms.Field"
+
+    def js_args(self, bound_field):
+        return [
+            {
+                "label": bound_field.label,
+                "help_text": bound_field.help_text,
+                "required": bound_field.field.required,
+                "widget": bound_field.field.widget,
+            }
+        ]
+
+    class Media:
+        js = [
+            "telepath_forms/js/telepath-forms.js",
+        ]
+
+
+register(FieldAdapter(), forms.BoundField)
+
+
 class FormAdapter(Adapter):
     js_constructor = "telepath.forms.Form"
 
     def js_args(self, form):
         return [
-            {
-                name: field.widget
-                for name, field in form.fields.items()
-            },
+            {bound_field.name: bound_field for bound_field in form},
             form.prefix,
         ]
 
