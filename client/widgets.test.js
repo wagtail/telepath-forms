@@ -9,7 +9,7 @@ beforeEach(() => {
 describe('Widget', () => {
   it('can be rendered', () => {
     const widget = new Widget(
-      '<input type="text" name="__NAME__" id="__ID__">', "__ID__"
+      '<input type="text" name="__NAME__" id="__ID__">'
     );
 
     const placeholder = document.createElement('div');
@@ -20,7 +20,6 @@ describe('Widget', () => {
     });
 
     expect(document.body.innerHTML).toMatchSnapshot();
-    expect(boundWidget.idForLabel).toBe("id_name");
     expect(boundWidget.getValue()).toBe("Bob");
     expect(boundWidget.getState()).toBe("Bob");
 
@@ -36,7 +35,7 @@ describe('Widget', () => {
 
   it('can be rendered when input is not a top-level element', () => {
     const widget = new Widget(
-      '<div><input type="text" name="__NAME__" id="__ID__"></div>', "__ID__"
+      '<div><input type="text" name="__NAME__" id="__ID__"></div>'
     );
 
     const placeholder = document.createElement('div');
@@ -56,7 +55,7 @@ describe('Widget', () => {
 
   it('can be retrieved for an existing form element', () => {
     const widget = new Widget(
-      '<input type="text" name="__NAME__" id="__ID__">', "__ID__"
+      '<input type="text" name="__NAME__" id="__ID__">'
     );
 
     document.body.innerHTML = '<input type="text" name="name" id="id_name" value="Bob">';
@@ -68,7 +67,7 @@ describe('Widget', () => {
 describe('CheckboxInput', () => {
   it('can be rendered', () => {
     const widget = new CheckboxInput(
-      '<input type="checkbox" name="__NAME__" id="__ID__">', "__ID__"
+      '<input type="checkbox" name="__NAME__" id="__ID__">'
     );
 
     const placeholder = document.createElement('div');
@@ -110,7 +109,7 @@ describe('RadioSelect', () => {
           </label>
         </div>
       </div>
-    `, "");
+    `);
 
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
@@ -120,7 +119,6 @@ describe('RadioSelect', () => {
     });
 
     expect(document.body.innerHTML).toMatchSnapshot();
-    expect(boundWidget.idForLabel).toBe("");
     expect(boundWidget.getValue()).toBe("green");
     expect(boundWidget.getState()).toStrictEqual(["green"]);
 
@@ -156,7 +154,7 @@ describe('multiple choice RadioSelect', () => {
           </label>
         </div>
       </div>
-    `, "");
+    `);
 
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
@@ -182,7 +180,7 @@ describe('Select', () => {
         <option value="green">Green</option>
         <option value="blue">Blue</option>
       </select>
-    `, "__ID__");
+    `);
 
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
@@ -210,7 +208,7 @@ describe('multiple choice Select', () => {
         <option value="green">Green</option>
         <option value="blue">Blue</option>
       </select>
-    `, "__ID__");
+    `);
 
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);

@@ -6,7 +6,6 @@ and extract field values.
 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.forms.utils import pretty_name
 
 from telepath import Adapter, register
 
@@ -17,7 +16,6 @@ class WidgetAdapter(Adapter):
     def js_args(self, widget):
         return [
             widget.render("__NAME__", None, attrs={"id": "__ID__"}),
-            widget.id_for_label("__ID__"),
         ]
 
     def get_media(self, widget):

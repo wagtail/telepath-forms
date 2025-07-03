@@ -8,7 +8,6 @@ export class BoundWidget {
   constructor(
     elementOrNodeList,
     name,
-    idForLabel,
   ) {
     // if elementOrNodeList not iterable, it must be a single element
     const nodeList = elementOrNodeList.forEach
@@ -34,8 +33,6 @@ export class BoundWidget {
         }
       }
     }
-
-    this.idForLabel = idForLabel;
   }
 
   getValue() {
@@ -66,9 +63,8 @@ export class BoundWidget {
 }
 
 export class Widget {
-  constructor(html, idPattern) {
+  constructor(html) {
     this.html = html;
-    this.idPattern = idPattern;
   }
 
   boundWidgetClass = BoundWidget;
@@ -81,7 +77,6 @@ export class Widget {
     options = {},
   ) {
     const html = this.html.replace(/__NAME__/g, name).replace(/__ID__/g, id);
-    const idForLabel = this.idPattern.replace(/__ID__/g, id);
 
     const element = replacePlaceholder(placeholder, html, options?.attributes)
 
@@ -89,7 +84,6 @@ export class Widget {
     const boundWidget = new this.boundWidgetClass(
       element,
       name,
-      idForLabel,
     );
     boundWidget.setState(initialState);
     return boundWidget;
@@ -124,10 +118,9 @@ adapters['telepath.forms.CheckboxInput'] = CheckboxInput;
 
 
 export class BoundRadioSelect {
-  constructor(element, name, idForLabel) {
+  constructor(element, name) {
     this.element = element;
     this.name = name;
-    this.idForLabel = idForLabel;
     this.isMultiple = !!this.element.querySelector(
       `input[name="${name}"][type="checkbox"]`,
     );
