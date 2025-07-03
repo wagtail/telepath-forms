@@ -59,8 +59,28 @@ describe('Widget', () => {
     );
 
     document.body.innerHTML = '<input type="text" name="name" id="id_name" value="Bob">';
+    const boundWidget = widget.getByName("name", document.body.querySelector('#id_name'));
+    expect(boundWidget.getValue()).toBe("Bob");
+  });
+
+  it('can be retrieved for an existing form element inside a container', () => {
+    const widget = new Widget(
+      '<input type="text" name="__NAME__" id="__ID__">'
+    );
+
+    document.body.innerHTML = '<div><input type="text" name="name" id="id_name" value="Bob"></div>';
     const boundWidget = widget.getByName("name", document.body);
     expect(boundWidget.getValue()).toBe("Bob");
+  });
+
+  it('throws an error if the element is not found', () => {
+    const widget = new Widget(
+      '<input type="text" name="__NAME__" id="__ID__">'
+    );
+
+    expect(() => {
+      widget.getByName("name", document.body);
+    }).toThrow('No input found with name "name"');
   });
 });
 
@@ -128,6 +148,58 @@ describe('RadioSelect', () => {
 
     boundWidget.focus();
     expect(document.activeElement.value).toBe("red");
+  });
+
+  it('can be retrieved by name', () => {
+    const widget = new RadioSelect(`
+      <div id="__ID__">
+        <div>
+          <label for="__ID___0">
+            <input type="radio" name="__NAME__" value="red" id="__ID___0">
+            Red
+          </label>
+        </div>
+        <div>
+          <label for="__ID___1">
+            <input type="radio" name="__NAME__" value="green" id="__ID___1">
+            Green
+          </label>
+        </div>
+        <div>
+          <label for="__ID___2">
+            <input type="radio" name="__NAME__" value="blue" id="__ID___2">
+            Blue
+          </label>
+        </div>
+      </div>
+    `);
+
+    document.body.innerHTML = `
+      <div id="id_color">
+        <div>
+          <label for="id_color_0">
+            <input type="radio" name="color" value="red" id="id_color_0">
+            Red
+          </label>
+        </div>
+        <div>
+          <label for="id_color_1">
+            <input type="radio" name="color" value="green" id="id_color_1" checked>
+            Green
+          </label>
+        </div>
+        <div>
+          <label for="id_color_2">
+            <input type="radio" name="color" value="blue" id="id_color_2">
+            Blue
+          </label>
+        </div>
+      </div>
+    `;
+
+    const boundWidget = widget.getByName("color", document.body.querySelector('#id_color'));
+
+    expect(boundWidget.getValue()).toBe("green");
   });
 });
 

@@ -5,34 +5,8 @@ export const adapters = {};
 
 
 export class BoundWidget {
-  constructor(
-    elementOrNodeList,
-    name,
-  ) {
-    // if elementOrNodeList not iterable, it must be a single element
-    const nodeList = elementOrNodeList.forEach
-      ? elementOrNodeList
-      : [elementOrNodeList];
-
-    // look for an input element with the given name, as either a direct element of nodeList
-    // or a descendant
-    const selector = `:is(input,select,textarea,button)[name="${name}"]`;
-
-    for (let i = 0; i < nodeList.length; i += 1) {
-      const element = nodeList[i];
-      if (element.nodeType === Node.ELEMENT_NODE) {
-        if (element.matches(selector)) {
-          this.input = element;
-          break;
-        } else {
-          const input = element.querySelector(selector);
-          if (input) {
-            this.input = input;
-            break;
-          }
-        }
-      }
-    }
+  constructor(input) {
+    this.input = input;
   }
 
   getValue() {
@@ -69,6 +43,16 @@ export class Widget {
 
   boundWidgetClass = BoundWidget;
 
+  _renderToElement(
+    placeholder,
+    name,
+    id,
+    options = {},
+  ) {
+    const html = this.html.replace(/__NAME__/g, name).replace(/__ID__/g, id);
+    return replacePlaceholder(placeholder, html, options?.attributes);
+  }
+
   render(
     placeholder,
     name,
@@ -76,22 +60,29 @@ export class Widget {
     initialState,
     options = {},
   ) {
-    const html = this.html.replace(/__NAME__/g, name).replace(/__ID__/g, id);
-
-    const element = replacePlaceholder(placeholder, html, options?.attributes)
+    const element = this._renderToElement(placeholder, name, id, options);
 
     // eslint-disable-next-line new-cap
-    const boundWidget = new this.boundWidgetClass(
-      element,
-      name,
-    );
+    const boundWidget = new this.boundWidgetClass(element);
     boundWidget.setState(initialState);
     return boundWidget;
   }
 
   getByName(name, container) {
+    let input = null;
+    const selector = `:is(input,select,textarea,button)[name="${name}"]`;
+    if (container.matches(selector)) {
+      input = container;
+    } else {
+      input = container.querySelector(selector);
+    }
+
+    if (!input) {
+      throw new Error(`No input found with name "${name}"`);
+    }
+
     // eslint-disable-next-line new-cap
-    return new this.boundWidgetClass(container, name);
+    return new this.boundWidgetClass(input);
   }
 }
 adapters['telepath.forms.Widget'] = Widget;
@@ -118,44 +109,62 @@ adapters['telepath.forms.CheckboxInput'] = CheckboxInput;
 
 
 export class BoundRadioSelect {
-  constructor(element, name) {
-    this.element = element;
-    this.name = name;
-    this.isMultiple = !!this.element.querySelector(
-      `input[name="${name}"][type="checkbox"]`,
-    );
-    this.selector = `input[name="${name}"]:checked`;
+  constructor(inputs) {
+    this.inputs = inputs;
+    this.isMultiple = inputs.length > 0 && inputs[0].type === 'checkbox';
   }
 
   getValue() {
+    const selectedValues = Array.from(this.inputs)
+      .filter((input) => input.checked)
+      .map((input) => input.value);
     if (this.isMultiple) {
-      return Array.from(this.element.querySelectorAll(this.selector)).map(
-        (el) => el.value,
-      );
+      return selectedValues;
+    } else {
+      return selectedValues.length > 0 ? selectedValues[0] : null;
     }
-    return this.element.querySelector(this.selector)?.value;
   }
 
   getState() {
-    return Array.from(this.element.querySelectorAll(this.selector)).map(
-      (el) => el.value,
-    );
+    return Array.from(this.inputs)
+      .filter((input) => input.checked)
+      .map((input) => input.value);
   }
 
   setState(state) {
-    const inputs = this.element.querySelectorAll(`input[name="${this.name}"]`);
-    for (let i = 0; i < inputs.length; i += 1) {
-      inputs[i].checked = state.includes(inputs[i].value);
+    for (let i = 0; i < this.inputs.length; i += 1) {
+      this.inputs[i].checked = state.includes(this.inputs[i].value);
     }
   }
 
   focus() {
-    this.element.querySelector(`input[name="${this.name}"]`)?.focus();
+    if (this.inputs.length > 0) this.inputs[0].focus();
   }
 }
 
 export class RadioSelect extends Widget {
   boundWidgetClass = BoundRadioSelect;
+
+  render(
+    placeholder,
+    name,
+    id,
+    initialState,
+    options = {},
+  ) {
+    const element = this._renderToElement(placeholder, name, id, options);
+    const inputs = element.querySelectorAll('input');
+    const boundWidget = new this.boundWidgetClass(inputs);
+    boundWidget.setState(initialState);
+    return boundWidget;
+  }
+  getByName(name, container) {
+    const inputs = container.querySelectorAll(
+      `input[name="${name}"]`,
+    );
+    // eslint-disable-next-line new-cap
+    return new this.boundWidgetClass(inputs);
+  }
 }
 adapters['telepath.forms.RadioSelect'] = RadioSelect;
 
