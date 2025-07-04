@@ -15,8 +15,8 @@ describe('Widget', () => {
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
 
-    const boundWidget = widget.render(placeholder, "name", "id_name", "Bob", {
-      attributes: {"aria-describedby": "id_name-help-text"}
+    const boundWidget = widget.render(placeholder, "Bob", {
+      "aria-describedby": "id_name-help-text", name: "name", id: "id_name"
     });
 
     expect(document.body.innerHTML).toMatchSnapshot();
@@ -33,6 +33,19 @@ describe('Widget', () => {
     expect(document.activeElement).toBe(boundWidget.input);
   });
 
+  it('fails rendering when there is no input element', () => {
+    const widget = new Widget(
+      '<p>Not an input</p>'
+    );
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+    expect(() => {
+      widget.render(placeholder, "Bob", {
+        "aria-describedby": "id_name-help-text", name: "name", id: "id_name"
+      });
+    }).toThrow("No input found in rendered widget");
+  });
+
   it('can be rendered when input is not a top-level element', () => {
     const widget = new Widget(
       '<div><input type="text" name="__NAME__" id="__ID__"></div>'
@@ -41,8 +54,8 @@ describe('Widget', () => {
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
 
-    const boundWidget = widget.render(placeholder, "name", "id_name", "Bob", {
-      attributes: {"aria-describedby": "id_name-help-text"}
+    const boundWidget = widget.render(placeholder, "Bob", {
+      "aria-describedby": "id_name-help-text", name: "name", id: "id_name"
     });
 
     expect(document.body.innerHTML).toMatchSnapshot();
@@ -51,6 +64,8 @@ describe('Widget', () => {
     boundWidget.setState("Alice");
     expect(boundWidget.getValue()).toBe("Alice");
     expect(boundWidget.getState()).toBe("Alice");
+    // check that the value is actually being set on the input inside the div
+    expect(document.querySelector("input").value).toBe("Alice");
   });
 
   it('can be retrieved for an existing form element', () => {
@@ -93,8 +108,8 @@ describe('CheckboxInput', () => {
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
 
-    const boundWidget = widget.render(placeholder, "extra_cheese", "id_extra_cheese", false, {
-      attributes: {"aria-describedby": "id_extra_cheese-help-text"}
+    const boundWidget = widget.render(placeholder, false, {
+      "aria-describedby": "id_extra_cheese-help-text", name: "extra_cheese", id: "id_extra_cheese"
     });
 
     expect(document.body.innerHTML).toMatchSnapshot();
@@ -134,8 +149,8 @@ describe('RadioSelect', () => {
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
 
-    const boundWidget = widget.render(placeholder, "color", "id_color", ["green"], {
-      attributes: {"aria-describedby": "id_color-help-text"}
+    const boundWidget = widget.render(placeholder, ["green"], {
+      "aria-describedby": "id_color-help-text", name: "color", id: "id_color"
     });
 
     expect(document.body.innerHTML).toMatchSnapshot();
@@ -231,8 +246,8 @@ describe('multiple choice RadioSelect', () => {
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
 
-    const boundWidget = widget.render(placeholder, "color", "id_color", ["red", "green"], {
-      attributes: {"aria-describedby": "id_color-help-text"}
+    const boundWidget = widget.render(placeholder, ["red", "green"], {
+      "aria-describedby": "id_color-help-text", name: "color", id: "id_color"
     });
 
     expect(document.body.innerHTML).toMatchSnapshot();
@@ -257,8 +272,8 @@ describe('Select', () => {
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
 
-    const boundWidget = widget.render(placeholder, "color", "id_color", ["green"], {
-      attributes: {"aria-describedby": "id_color-help-text"}
+    const boundWidget = widget.render(placeholder, ["green"], {
+      "aria-describedby": "id_color-help-text", name: "color", id: "id_color"
     });
 
     expect(document.body.innerHTML).toMatchSnapshot();
@@ -285,8 +300,8 @@ describe('multiple choice Select', () => {
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
 
-    const boundWidget = widget.render(placeholder, "color", "id_color", ["green"], {
-      attributes: {"aria-describedby": "id_color-help-text"}
+    const boundWidget = widget.render(placeholder, ["green"], {
+      "aria-describedby": "id_color-help-text", name: "color", id: "id_color"
     });
 
     expect(document.body.innerHTML).toMatchSnapshot();

@@ -1,4 +1,4 @@
-import { replacePlaceholder } from './utils.js';
+import { querySelectorIncludingSelf, replacePlaceholder } from './utils.js';
 
 
 export const adapters = {};
@@ -43,39 +43,33 @@ export class Widget {
 
   boundWidgetClass = BoundWidget;
 
-  _renderToElement(
-    placeholder,
-    name,
-    id,
-    options = {},
-  ) {
-    const html = this.html.replace(/__NAME__/g, name).replace(/__ID__/g, id);
-    return replacePlaceholder(placeholder, html, options?.attributes);
+  _renderToElement(placeholder, attributes) {
+    const {name, id, ...otherAttributes} = attributes || {};
+    const html = this.html.replace(/__NAME__/g, name || '').replace(/__ID__/g, id || '');
+    return replacePlaceholder(placeholder, html, otherAttributes);
   }
 
   render(
     placeholder,
-    name,
-    id,
     initialState,
-    options = {},
+    attributes = {},
   ) {
-    const element = this._renderToElement(placeholder, name, id, options);
+    const element = this._renderToElement(placeholder, attributes);
+
+    const input = querySelectorIncludingSelf(element, ":is(input,select,textarea,button)");
+
+    if (!input) {
+      throw new Error("No input found in rendered widget");
+    }
 
     // eslint-disable-next-line new-cap
-    const boundWidget = new this.boundWidgetClass(element);
+    const boundWidget = new this.boundWidgetClass(input);
     boundWidget.setState(initialState);
     return boundWidget;
   }
 
   getByName(name, container) {
-    let input = null;
-    const selector = `:is(input,select,textarea,button)[name="${name}"]`;
-    if (container.matches(selector)) {
-      input = container;
-    } else {
-      input = container.querySelector(selector);
-    }
+    const input = querySelectorIncludingSelf(container, `:is(input,select,textarea,button)[name="${name}"]`);
 
     if (!input) {
       throw new Error(`No input found with name "${name}"`);
@@ -147,12 +141,10 @@ export class RadioSelect extends Widget {
 
   render(
     placeholder,
-    name,
-    id,
     initialState,
-    options = {},
+    attributes = {},
   ) {
-    const element = this._renderToElement(placeholder, name, id, options);
+    const element = this._renderToElement(placeholder, attributes);
     const inputs = element.querySelectorAll('input');
     const boundWidget = new this.boundWidgetClass(inputs);
     boundWidget.setState(initialState);

@@ -58,3 +58,14 @@ export const replacePlaceholder = (placeholder, html, attributes) => {
 
   return childElements.length === 1 ? childElements[0] : childNodes;
 }
+
+export const querySelectorIncludingSelf = (container, selector) => {
+  /**
+   * Returns the first element matching the selector, including the container itself.
+   * If the container matches the selector, it is returned; otherwise, it searches within the container.
+   */
+  if (container.matches(selector)) {
+    return container;
+  }
+  return container.querySelector(selector);
+}
