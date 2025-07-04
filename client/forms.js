@@ -70,14 +70,12 @@ export class BoundForm {
 }
 
 export class Form {
-  constructor(fields, prefix) {
+  constructor(fields) {
     this.fields = fields;
-    this.prefix = prefix;
   }
 
   bind(container, prefix) {
     const boundWidgets = {};
-    prefix = prefix || this.prefix;
     for (const [name, field] of Object.entries(this.fields)) {
       const prefixedName = prefix ? `${prefix}-${name}` : name;
       boundWidgets[name] = field.widget.getByName(prefixedName, container);

@@ -50,7 +50,7 @@ describe('Form', () => {
         required: true,
         widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
       }),
-    }, "person");
+    });
 
     document.body.innerHTML = `
       <form>
@@ -59,7 +59,7 @@ describe('Form', () => {
       </form>
     `;
 
-    const boundForm = form.bind(document.body);
+    const boundForm = form.bind(document.body, "person");
     expect(boundForm.getValue()).toStrictEqual({name: "Bob", email: "bob@example.com"});
     expect(boundForm.getState()).toStrictEqual({name: "Bob", email: "bob@example.com"});
   });
@@ -81,7 +81,7 @@ describe('FormSet', () => {
         required: true,
         widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
       }),
-    }, "people-___prefix___");
+    });
     const formSet = new FormSet(form, "people");
 
     document.body.innerHTML = `
