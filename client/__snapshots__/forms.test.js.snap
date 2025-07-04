@@ -2,4 +2,27 @@
 
 exports[`Field can be rendered as a field group 1`] = `"<label for="id_person-name">Name: </label><div class="helptext" id="id_person-name_helptext">Enter your name</div><input type="text" name="person-name" id="id_person-name" class="form-control" aria-describedby="id_person-name_helptext">"`;
 
+exports[`Field can be rendered without a label 1`] = `"<div class="helptext" id="id_person-name_helptext">Enter your name</div><input type="text" name="person-name" id="id_person-name" class="form-control" aria-describedby="id_person-name_helptext">"`;
+
+exports[`Field can be rendered without help text 1`] = `"<label for="id_person-name">Name: </label><input type="text" name="person-name" id="id_person-name" class="form-control">"`;
+
+exports[`Field omits for attribute on label if useIdForLabel is false 1`] = `
+"<label>Beverage: </label><div id="id_beverage">
+          <div>
+            <label for="id_beverage_0">
+              <input type="radio" name="beverage" value="tea" id="id_beverage_0">
+              Tea
+            </label>
+          </div>
+          <div>
+            <label for="id_beverage_1">
+              <input type="radio" name="beverage" value="coffee" id="id_beverage_1">
+              Coffee
+            </label>
+          </div>
+        </div>"
+`;
+
 exports[`Form can be rendered 1`] = `"<div><label for="id_person-name">Name: </label><div class="helptext" id="id_person-name_helptext">Enter your name</div><input type="text" name="person-name" id="id_person-name" aria-describedby="id_person-name_helptext"></div><div><label for="id_person-email">Email: </label><div class="helptext" id="id_person-email_helptext">Enter your email</div><input type="text" name="person-email" id="id_person-email" aria-describedby="id_person-email_helptext"></div><input type="hidden" name="person-secret" id="id_person-secret" value="">"`;
+
+exports[`Form can be rendered without a prefix 1`] = `"<div><label for="id_name">Name: </label><div class="helptext" id="id_name_helptext">Enter your name</div><input type="text" name="name" id="id_name" aria-describedby="id_name_helptext"></div><div><label for="id_email">Email: </label><div class="helptext" id="id_email_helptext">Enter your email</div><input type="text" name="email" id="id_email" aria-describedby="id_email_helptext"></div><input type="hidden" name="secret" id="id_secret" value="">"`;

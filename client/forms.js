@@ -3,7 +3,7 @@ import { replacePlaceholder } from './utils.js';
 export const adapters = {};
 
 export class Field {
-  constructor(options = {}) {
+  constructor(options) {
     this.name = options.name;
     if (!this.name) {
       throw new Error('Field must have a name');

@@ -1,5 +1,5 @@
 import { Field, Form, FormSet } from "./forms";
-import { BoundWidget, Widget } from "./widgets";
+import { BoundWidget, RadioSelect, Widget } from "./widgets";
 
 
 beforeEach(() => {
@@ -63,6 +63,16 @@ describe('Form', () => {
     document.body.appendChild(placeholder);
 
     const boundForm = form.render(placeholder, "person");
+    expect(document.body.innerHTML).toMatchSnapshot();
+    expect(boundForm.getValue()).toStrictEqual({name: "", email: "", secret: ""});
+    expect(boundForm.getState()).toStrictEqual({name: "", email: "", secret: ""});
+  });
+
+  it('can be rendered without a prefix', () => {
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+
+    const boundForm = form.render(placeholder);
     expect(document.body.innerHTML).toMatchSnapshot();
     expect(boundForm.getValue()).toStrictEqual({name: "", email: "", secret: ""});
     expect(boundForm.getState()).toStrictEqual({name: "", email: "", secret: ""});
@@ -142,6 +152,44 @@ describe('Field', () => {
     expect(input.getAttribute('aria-describedby')).toBe("some-other-id id_person-name_helptext");
   });
 
+  it('can be rendered without a label', () => {
+    const field = new Field({
+      name: "name",
+      id: "id_name",
+      helpText: "Enter your name",
+      required: true,
+      widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', {isHidden: false}),
+      initialState: "Bob",
+    });
+
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+
+    const widget = field.renderAsFieldGroup(placeholder, "person", {"class": "form-control"});
+    expect(document.body.innerHTML).toMatchSnapshot();
+    expect(widget).toBeInstanceOf(BoundWidget);
+    expect(widget.getValue()).toBe("Bob");
+  });
+
+  it('can be rendered without help text', () => {
+    const field = new Field({
+      name: "name",
+      id: "id_name",
+      label: "Name",
+      required: true,
+      widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', {isHidden: false}),
+      initialState: "Bob",
+    });
+
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+
+    const widget = field.renderAsFieldGroup(placeholder, "person", {"class": "form-control"});
+    expect(document.body.innerHTML).toMatchSnapshot();
+    expect(widget).toBeInstanceOf(BoundWidget);
+    expect(widget.getValue()).toBe("Bob");
+  });
+
   it('fails if no name is supplied', () => {
     expect(() => {
       new Field({
@@ -163,5 +211,36 @@ describe('Field', () => {
         required: true,
       });
     }).toThrow("Field must have a widget");
+  });
+
+  it('omits for attribute on label if useIdForLabel is false', () => {
+    const field = new Field({
+      name: "beverage",
+      id: "id_beverage",
+      label: "Beverage",
+      widget: new RadioSelect(`
+        <div id="__ID__">
+          <div>
+            <label for="__ID___0">
+              <input type="radio" name="__NAME__" value="tea" id="__ID___0">
+              Tea
+            </label>
+          </div>
+          <div>
+            <label for="__ID___1">
+              <input type="radio" name="__NAME__" value="coffee" id="__ID___1">
+              Coffee
+            </label>
+          </div>
+        </div>
+      `, {isHidden: false}),
+      initialState: "Bob",
+    });
+
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+
+    field.renderAsFieldGroup(placeholder);
+    expect(document.body.innerHTML).toMatchSnapshot();
   });
 });
