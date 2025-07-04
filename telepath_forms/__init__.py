@@ -60,10 +60,12 @@ class FieldAdapter(Adapter):
     def js_args(self, bound_field):
         return [
             {
+                "name": bound_field.name,
                 "label": bound_field.label,
                 "help_text": bound_field.help_text,
                 "required": bound_field.field.required,
                 "widget": bound_field.field.widget,
+                "initialState": bound_field.value(),  # FIXME: translate to the 'state' required by the widget
             }
         ]
 
