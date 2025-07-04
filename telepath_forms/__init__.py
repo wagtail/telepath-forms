@@ -57,6 +57,12 @@ register(SelectAdapter(), forms.Select)
 class FieldAdapter(Adapter):
     js_constructor = "telepath.forms.Field"
 
+    def get_state_for_value(self, value):
+        """
+        Convert the value to a format suitable for the JavaScript side.
+        """
+        return value
+
     def js_args(self, bound_field):
         return [
             {
@@ -65,7 +71,7 @@ class FieldAdapter(Adapter):
                 "help_text": bound_field.help_text,
                 "required": bound_field.field.required,
                 "widget": bound_field.field.widget,
-                "initialState": bound_field.value(),  # FIXME: translate to the 'state' required by the widget
+                "initialState": self.get_state_for_value(bound_field.value()),
             }
         ]
 

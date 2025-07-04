@@ -161,6 +161,11 @@ describe('RadioSelect', () => {
     expect(boundWidget.getValue()).toBe("blue");
     expect(boundWidget.getState()).toStrictEqual(["blue"]);
 
+    // can also pass a non-array value to setState
+    boundWidget.setState("red");
+    expect(boundWidget.getValue()).toBe("red");
+    expect(boundWidget.getState()).toStrictEqual(["red"]);
+
     boundWidget.focus();
     expect(document.activeElement.value).toBe("red");
   });
@@ -256,6 +261,9 @@ describe('multiple choice RadioSelect', () => {
     boundWidget.setState(["green", "blue"]);
     expect(boundWidget.getValue()).toStrictEqual(["green", "blue"]);
     expect(boundWidget.getState()).toStrictEqual(["green", "blue"]);
+    boundWidget.setState(null);
+    expect(boundWidget.getValue()).toStrictEqual([]);
+    expect(boundWidget.getState()).toStrictEqual([]);
   });
 });
 
@@ -284,6 +292,11 @@ describe('Select', () => {
     boundWidget.setState(["blue"]);
     expect(boundWidget.getValue()).toBe("blue");
     expect(boundWidget.getState()).toStrictEqual(["blue"]);
+
+    // can also pass a non-array value to setState
+    boundWidget.setState("red");
+    expect(boundWidget.getValue()).toBe("red");
+    expect(boundWidget.getState()).toStrictEqual(["red"]);
   });
 });
 
@@ -312,5 +325,9 @@ describe('multiple choice Select', () => {
     boundWidget.setState(["blue"]);
     expect(boundWidget.getValue()).toStrictEqual(["blue"]);
     expect(boundWidget.getState()).toStrictEqual(["blue"]);
+
+    boundWidget.setState(null);
+    expect(boundWidget.getValue()).toStrictEqual([]);
+    expect(boundWidget.getState()).toStrictEqual([]);
   });
 });

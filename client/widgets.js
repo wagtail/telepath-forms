@@ -127,6 +127,11 @@ export class BoundRadioSelect {
   }
 
   setState(state) {
+    if (state === null || state === undefined) {
+      state = [];
+    } else if (!Array.isArray(state)) {
+      state = [state];
+    }
     for (let i = 0; i < this.inputs.length; i += 1) {
       this.inputs[i].checked = state.includes(this.inputs[i].value);
     }
@@ -184,6 +189,12 @@ export class BoundSelect extends BoundWidget {
   }
 
   setState(state) {
+    if (state === null || state === undefined) {
+      state = [];
+    } else if (!Array.isArray(state)) {
+      state = [state];
+    }
+
     const options = this.input.options;
     for (let i = 0; i < options.length; i += 1) {
       options[i].selected = state.includes(options[i].value);
