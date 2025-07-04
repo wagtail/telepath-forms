@@ -16,6 +16,9 @@ class WidgetAdapter(Adapter):
     def js_args(self, widget):
         return [
             widget.render("__NAME__", None, attrs={"id": "__ID__"}),
+            {
+                'isHidden': widget.is_hidden,
+            },
         ]
 
     def get_media(self, widget):

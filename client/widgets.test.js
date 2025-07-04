@@ -9,7 +9,8 @@ beforeEach(() => {
 describe('Widget', () => {
   it('can be rendered', () => {
     const widget = new Widget(
-      '<input type="text" name="__NAME__" id="__ID__">'
+      '<input type="text" name="__NAME__" id="__ID__">',
+      {isHidden: false},
     );
 
     const placeholder = document.createElement('div');
@@ -35,7 +36,8 @@ describe('Widget', () => {
 
   it('fails rendering when there is no input element', () => {
     const widget = new Widget(
-      '<p>Not an input</p>'
+      '<p>Not an input</p>',
+      {isHidden: false},
     );
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
@@ -48,7 +50,8 @@ describe('Widget', () => {
 
   it('can be rendered when input is not a top-level element', () => {
     const widget = new Widget(
-      '<div><input type="text" name="__NAME__" id="__ID__"></div>'
+      '<div><input type="text" name="__NAME__" id="__ID__"></div>',
+      {isHidden: false},
     );
 
     const placeholder = document.createElement('div');
@@ -70,7 +73,8 @@ describe('Widget', () => {
 
   it('can be retrieved for an existing form element', () => {
     const widget = new Widget(
-      '<input type="text" name="__NAME__" id="__ID__">'
+      '<input type="text" name="__NAME__" id="__ID__">',
+      {isHidden: false},
     );
 
     document.body.innerHTML = '<input type="text" name="name" id="id_name" value="Bob">';
@@ -80,7 +84,8 @@ describe('Widget', () => {
 
   it('can be retrieved for an existing form element inside a container', () => {
     const widget = new Widget(
-      '<input type="text" name="__NAME__" id="__ID__">'
+      '<input type="text" name="__NAME__" id="__ID__">',
+      {isHidden: false},
     );
 
     document.body.innerHTML = '<div><input type="text" name="name" id="id_name" value="Bob"></div>';
@@ -90,7 +95,8 @@ describe('Widget', () => {
 
   it('throws an error if the element is not found', () => {
     const widget = new Widget(
-      '<input type="text" name="__NAME__" id="__ID__">'
+      '<input type="text" name="__NAME__" id="__ID__">',
+      {isHidden: false},
     );
 
     expect(() => {
@@ -102,7 +108,8 @@ describe('Widget', () => {
 describe('CheckboxInput', () => {
   it('can be rendered', () => {
     const widget = new CheckboxInput(
-      '<input type="checkbox" name="__NAME__" id="__ID__">'
+      '<input type="checkbox" name="__NAME__" id="__ID__">',
+      {isHidden: false},
     );
 
     const placeholder = document.createElement('div');
@@ -144,7 +151,7 @@ describe('RadioSelect', () => {
           </label>
         </div>
       </div>
-    `);
+    `, {isHidden: false});
 
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
@@ -192,7 +199,7 @@ describe('RadioSelect', () => {
           </label>
         </div>
       </div>
-    `);
+    `, {isHidden: false});
 
     document.body.innerHTML = `
       <div id="id_color">
@@ -246,7 +253,7 @@ describe('multiple choice RadioSelect', () => {
           </label>
         </div>
       </div>
-    `);
+    `, {isHidden: false});
 
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
@@ -275,7 +282,7 @@ describe('Select', () => {
         <option value="green">Green</option>
         <option value="blue">Blue</option>
       </select>
-    `);
+    `, {isHidden: false});
 
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
@@ -308,7 +315,7 @@ describe('multiple choice Select', () => {
         <option value="green">Green</option>
         <option value="blue">Blue</option>
       </select>
-    `);
+    `, {isHidden: false});
 
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);

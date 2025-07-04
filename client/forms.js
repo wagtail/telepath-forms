@@ -11,8 +11,25 @@ export class Field {
     this.label = options.label || '';
     this.helpText = options.helpText || '';
     this.required = options.required || false;
-    this.widget = options.widget || null;
+    this.widget = options.widget;
+    if (!this.widget) {
+      throw new Error('Field must have a widget');
+    }
     this.initialState = options.initialState || null;
+
+    this.isHidden = this.widget.isHidden;
+  }
+
+  renderWidget(placeholder, prefix, attributes = {}) {
+    const prefixedName = prefix ? `${prefix}-${this.name}` : this.name;
+    const id = `id_${prefixedName}`;
+
+    const widgetAttributes = {
+      name: prefixedName,
+      id: id,
+      ...attributes,
+    }
+    return this.widget.render(placeholder, this.initialState, widgetAttributes);
   }
 
   renderAsFieldGroup(placeholder, prefix, attributes = {}) {
@@ -107,14 +124,22 @@ export class Form {
     const boundWidgets = {};
     let lastContainer = placeholder;
     for (const field of this.fields) {
-      const container = document.createElement('div');
-      lastContainer.after(container);
-      lastContainer = container;
+      if (field.isHidden) {
+        // If the field is hidden, just render the widget directly
+        const hiddenPlaceholder = document.createElement('div');
+        lastContainer.after(hiddenPlaceholder);
+        lastContainer = hiddenPlaceholder;
+        boundWidgets[field.name] = field.renderWidget(hiddenPlaceholder, prefix);
+      } else {
+        const container = document.createElement('div');
+        lastContainer.after(container);
+        lastContainer = container;
 
-      const fieldPlaceholder = document.createElement('div');
-      container.appendChild(fieldPlaceholder);
+        const fieldPlaceholder = document.createElement('div');
+        container.appendChild(fieldPlaceholder);
 
-      boundWidgets[field.name] = field.renderAsFieldGroup(fieldPlaceholder, prefix);
+        boundWidgets[field.name] = field.renderAsFieldGroup(fieldPlaceholder, prefix);
+      }
     }
     placeholder.remove();
     return new BoundForm(boundWidgets);

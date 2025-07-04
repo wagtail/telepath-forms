@@ -37,8 +37,9 @@ export class BoundWidget {
 }
 
 export class Widget {
-  constructor(html) {
+  constructor(html, options = {}) {
     this.html = html;
+    this.isHidden = options.isHidden || false;
   }
 
   boundWidgetClass = BoundWidget;
