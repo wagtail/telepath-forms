@@ -29,7 +29,7 @@ export class Field {
 
     if (this.label) {
       const labelElement = document.createElement('label');
-      labelElement.textContent = this.label;
+      labelElement.textContent = `${this.label}: `;
       if (this.widget.useIdForLabel) {
         labelElement.setAttribute('for', id);
       }
