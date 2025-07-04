@@ -42,6 +42,7 @@ export class Widget {
   }
 
   boundWidgetClass = BoundWidget;
+  useIdForLabel = true;
 
   _renderToElement(placeholder, attributes) {
     const {name, id, ...otherAttributes} = attributes || {};
@@ -138,6 +139,7 @@ export class BoundRadioSelect {
 
 export class RadioSelect extends Widget {
   boundWidgetClass = BoundRadioSelect;
+  useIdForLabel = false;
 
   render(
     placeholder,

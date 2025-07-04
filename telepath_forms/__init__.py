@@ -83,7 +83,7 @@ class FormAdapter(Adapter):
 
     def js_args(self, form):
         return [
-            {bound_field.name: bound_field for bound_field in form},
+            list(form)  # gives a list of bound fields
         ]
 
     class Media:

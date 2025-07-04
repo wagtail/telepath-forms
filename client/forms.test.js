@@ -9,20 +9,22 @@ beforeEach(() => {
 
 describe('Form', () => {
   it('can be bound', () => {
-    const form = new Form({
-      name: new Field({
+    const form = new Form([
+      new Field({
+        name: "name",
         label: "Name",
         helpText: "Enter your name",
         required: true,
         widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
       }),
-      email: new Field({
+      new Field({
+        name: "email",
         label: "Email",
         helpText: "Enter your email",
         required: true,
         widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
       }),
-    });
+    ]);
 
     document.body.innerHTML = `
       <form>
@@ -37,20 +39,22 @@ describe('Form', () => {
   });
 
   it('can be bound when a prefix is in use', () => {
-    const form = new Form({
-      name: new Field({
+    const form = new Form([
+      new Field({
+        name: "name",
         label: "Name",
         helpText: "Enter your name",
         required: true,
         widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
       }),
-      email: new Field({
+      new Field({
+        name: "email",
         label: "Email",
         helpText: "Enter your email",
         required: true,
         widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
       }),
-    });
+    ]);
 
     document.body.innerHTML = `
       <form>
@@ -63,25 +67,54 @@ describe('Form', () => {
     expect(boundForm.getValue()).toStrictEqual({name: "Bob", email: "bob@example.com"});
     expect(boundForm.getState()).toStrictEqual({name: "Bob", email: "bob@example.com"});
   });
-});
 
-
-describe('FormSet', () => {
-  it('can be bound', () => {
-    const form = new Form({
-      name: new Field({
+  it('can be rendered', () => {
+    const form = new Form([
+      new Field({
+        name: "name",
         label: "Name",
         helpText: "Enter your name",
         required: true,
         widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
       }),
-      email: new Field({
+      new Field({
+        name: "email",
         label: "Email",
         helpText: "Enter your email",
         required: true,
         widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
       }),
-    });
+    ]);
+
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+
+    const boundForm = form.render(placeholder, "person");
+    expect(document.body.innerHTML).toMatchSnapshot();
+    expect(boundForm.getValue()).toStrictEqual({name: "", email: ""});
+    expect(boundForm.getState()).toStrictEqual({name: "", email: ""});
+  });
+});
+
+
+describe('FormSet', () => {
+  it('can be bound', () => {
+    const form = new Form([
+      new Field({
+        name: "name",
+        label: "Name",
+        helpText: "Enter your name",
+        required: true,
+        widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      }),
+      new Field({
+        name: "email",
+        label: "Email",
+        helpText: "Enter your email",
+        required: true,
+        widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', "__ID__"),
+      }),
+    ]);
     const formSet = new FormSet(form, "people");
 
     document.body.innerHTML = `
@@ -125,9 +158,40 @@ describe('Field', () => {
     const placeholder = document.createElement('div');
     document.body.appendChild(placeholder);
 
-    const widget = field.renderAsFieldGroup(placeholder, {"class": "form-control"});
+    const widget = field.renderAsFieldGroup(placeholder, "person", {"class": "form-control"});
     expect(document.body.innerHTML).toMatchSnapshot();
     expect(widget).toBeInstanceOf(BoundWidget);
     expect(widget.getValue()).toBe("Bob");
+  });
+
+  it('preserves existing aria-describedby', () => {
+    const field = new Field({
+      name: "name",
+      id: "id_name",
+      label: "Name",
+      helpText: "Enter your name",
+      required: true,
+      widget: new Widget('<input type="text" name="__NAME__" id="__ID__">'),
+      initialState: "Bob",
+    });
+
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+
+    field.renderAsFieldGroup(placeholder, "person", {"aria-describedby": "some-other-id"});
+    const input = document.querySelector('#id_person-name');
+    expect(input.getAttribute('aria-describedby')).toBe("some-other-id id_person-name_helptext");
+  });
+
+  it('fails if no name is supplied', () => {
+    expect(() => {
+      new Field({
+        id: "id_name",
+        label: "Name",
+        helpText: "Enter your name",
+        required: true,
+        widget: new Widget('<input type="text" name="__NAME__" id="__ID__">'),
+      });
+    }).toThrow("Field must have a name");
   });
 });

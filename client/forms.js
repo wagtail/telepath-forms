@@ -4,42 +4,62 @@ export const adapters = {};
 
 export class Field {
   constructor(options = {}) {
-    this.name = options.name || '';
+    this.name = options.name;
+    if (!this.name) {
+      throw new Error('Field must have a name');
+    }
     this.label = options.label || '';
-    this.id = options.id || `id_${this.name}`;
     this.helpText = options.helpText || '';
     this.required = options.required || false;
     this.widget = options.widget || null;
     this.initialState = options.initialState || null;
   }
 
-  renderAsFieldGroup(placeholder, attributes = {}) {
-    let labelHtml = '';
-    if (this.label) {
-      let labelForAttribute = '';
-      if (this.id) {
-        labelForAttribute = ` for="${this.id}"`;
-      }
-      labelHtml = `<label${labelForAttribute}>${this.label}</label>`;
-    }
+  renderAsFieldGroup(placeholder, prefix, attributes = {}) {
+    const prefixedName = prefix ? `${prefix}-${this.name}` : this.name;
+    const id = `id_${prefixedName}`;
 
-    let helpTextHtml = '';
-    if (this.helpText) {
-      let helpTextIdAttribute = '';
-      if (this.id) {
-        helpTextIdAttribute = ` id="${this.id}_helptext"`;
-      }
-      helpTextHtml = `<div class="helptext"${helpTextIdAttribute}>${this.helpText}</div>`;
-    }
-
-    const fieldHtml = `${labelHtml}${helpTextHtml}<div data-widget-placeholder></div>`;
-    const fieldNodeList = replacePlaceholder(placeholder, fieldHtml, attributes);
-    const fieldPlaceholder = fieldNodeList[fieldNodeList.length - 1];
-    const widget = this.widget.render(fieldPlaceholder, this.initialState, {
-      name: this.name,
-      id: this.id,
+    const widgetAttributes = {
+      name: prefixedName,
+      id: id,
       ...attributes,
-    });
+    }
+
+    let lastElement = placeholder;
+
+    if (this.label) {
+      const labelElement = document.createElement('label');
+      labelElement.textContent = this.label;
+      if (this.widget.useIdForLabel) {
+        labelElement.setAttribute('for', id);
+      }
+      lastElement.after(labelElement);
+      lastElement = labelElement;
+    }
+ 
+    if (this.helpText) {
+      const helpTextId = `${id}_helptext`;
+      const helpTextElement = document.createElement('div');
+      helpTextElement.className = 'helptext';
+      helpTextElement.id = helpTextId;
+      helpTextElement.innerHTML = this.helpText;
+      lastElement.after(helpTextElement);
+      lastElement = helpTextElement;
+
+      if ('aria-describedby' in widgetAttributes) {
+        widgetAttributes['aria-describedby'] += ` ${helpTextId}`;
+      } else {
+        widgetAttributes['aria-describedby'] = helpTextId;
+      }
+    }
+
+    const fieldPlaceholder = document.createElement('div');
+    lastElement.after(fieldPlaceholder);
+    lastElement = fieldPlaceholder;
+
+    const widget = this.widget.render(fieldPlaceholder, this.initialState, widgetAttributes);
+    placeholder.remove();
+
     return widget;
   }
 }
@@ -76,10 +96,27 @@ export class Form {
 
   bind(container, prefix) {
     const boundWidgets = {};
-    for (const [name, field] of Object.entries(this.fields)) {
-      const prefixedName = prefix ? `${prefix}-${name}` : name;
-      boundWidgets[name] = field.widget.getByName(prefixedName, container);
+    for (const field of this.fields) {
+      const prefixedName = prefix ? `${prefix}-${field.name}` : field.name;
+      boundWidgets[field.name] = field.widget.getByName(prefixedName, container);
     }
+    return new BoundForm(boundWidgets);
+  }
+
+  render(placeholder, prefix) {
+    const boundWidgets = {};
+    let lastContainer = placeholder;
+    for (const field of this.fields) {
+      const container = document.createElement('div');
+      lastContainer.after(container);
+      lastContainer = container;
+
+      const fieldPlaceholder = document.createElement('div');
+      container.appendChild(fieldPlaceholder);
+
+      boundWidgets[field.name] = field.renderAsFieldGroup(fieldPlaceholder, prefix);
+    }
+    placeholder.remove();
     return new BoundForm(boundWidgets);
   }
 }
