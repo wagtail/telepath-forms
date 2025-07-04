@@ -1,5 +1,5 @@
 import { Field, Form, FormSet } from "./forms";
-import { Widget } from "./widgets";
+import { BoundWidget, Widget } from "./widgets";
 
 
 beforeEach(() => {
@@ -106,5 +106,28 @@ describe('FormSet', () => {
       {name: "Vic", email: "vic@example.com"},
       {name: "Bob", email: "bob@example.com"},
     ]);
+  });
+});
+
+
+describe('Field', () => {
+  it('can be rendered as a field group', () => {
+    const field = new Field({
+      name: "name",
+      id: "id_name",
+      label: "Name",
+      helpText: "Enter your name",
+      required: true,
+      widget: new Widget('<input type="text" name="__NAME__" id="__ID__">'),
+      initialState: "Bob",
+    });
+
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+
+    const widget = field.renderAsFieldGroup(placeholder, {"class": "form-control"});
+    expect(document.body.innerHTML).toMatchSnapshot();
+    expect(widget).toBeInstanceOf(BoundWidget);
+    expect(widget.getValue()).toBe("Bob");
   });
 });
