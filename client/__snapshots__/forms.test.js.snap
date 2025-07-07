@@ -2,6 +2,8 @@
 
 exports[`Field can be rendered as a field group 1`] = `"<label for="id_person-name">Name: </label><div class="helptext" id="id_person-name_helptext">Enter your name</div><input type="text" name="person-name" id="id_person-name" class="form-control" aria-describedby="id_person-name_helptext">"`;
 
+exports[`Field can be rendered as a widget 1`] = `"<input type="text" name="person-name" id="id_person-name">"`;
+
 exports[`Field can be rendered without a label 1`] = `"<div class="helptext" id="id_person-name_helptext">Enter your name</div><input type="text" name="person-name" id="id_person-name" class="form-control" aria-describedby="id_person-name_helptext">"`;
 
 exports[`Field can be rendered without help text 1`] = `"<label for="id_person-name">Name: </label><input type="text" name="person-name" id="id_person-name" class="form-control">"`;

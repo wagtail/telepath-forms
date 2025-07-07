@@ -20,7 +20,7 @@ export class Field {
     this.isHidden = this.widget.isHidden;
   }
 
-  renderWidget(placeholder, prefix, attributes = {}) {
+  renderWidget(placeholder, prefix, attributes = {}, state) {
     const prefixedName = prefix ? `${prefix}-${this.name}` : this.name;
     const id = `id_${prefixedName}`;
 
@@ -29,10 +29,13 @@ export class Field {
       id: id,
       ...attributes,
     }
-    return this.widget.render(placeholder, this.initialState, widgetAttributes);
+    if (state === undefined) {
+      state = this.initialState;
+    }
+    return this.widget.render(placeholder, state, widgetAttributes);
   }
 
-  renderAsFieldGroup(placeholder, prefix, attributes = {}) {
+  renderAsFieldGroup(placeholder, prefix, attributes = {}, state) {
     const prefixedName = prefix ? `${prefix}-${this.name}` : this.name;
     const id = `id_${prefixedName}`;
 
@@ -74,7 +77,11 @@ export class Field {
     lastElement.after(fieldPlaceholder);
     lastElement = fieldPlaceholder;
 
-    const widget = this.widget.render(fieldPlaceholder, this.initialState, widgetAttributes);
+    if (state === undefined) {
+      state = this.initialState;
+    }
+
+    const widget = this.widget.render(fieldPlaceholder, state, widgetAttributes);
     placeholder.remove();
 
     return widget;
@@ -120,7 +127,7 @@ export class Form {
     return new BoundForm(boundWidgets);
   }
 
-  render(placeholder, prefix) {
+  render(placeholder, prefix, state) {
     const boundWidgets = {};
     let lastContainer = placeholder;
     for (const field of this.fields) {
@@ -129,7 +136,11 @@ export class Form {
         const hiddenPlaceholder = document.createElement('div');
         lastContainer.after(hiddenPlaceholder);
         lastContainer = hiddenPlaceholder;
-        boundWidgets[field.name] = field.renderWidget(hiddenPlaceholder, prefix);
+        if (state && state[field.name] !== undefined) {
+          boundWidgets[field.name] = field.renderWidget(hiddenPlaceholder, prefix, {}, state[field.name]);
+        } else {
+          boundWidgets[field.name] = field.renderWidget(hiddenPlaceholder, prefix, {});
+        }
       } else {
         const container = document.createElement('div');
         lastContainer.after(container);
@@ -138,7 +149,11 @@ export class Form {
         const fieldPlaceholder = document.createElement('div');
         container.appendChild(fieldPlaceholder);
 
-        boundWidgets[field.name] = field.renderAsFieldGroup(fieldPlaceholder, prefix);
+        if (state && state[field.name] !== undefined) {
+          boundWidgets[field.name] = field.renderAsFieldGroup(fieldPlaceholder, prefix, {}, state[field.name]);
+        } else {
+          boundWidgets[field.name] = field.renderAsFieldGroup(fieldPlaceholder, prefix, {});
+        }
       }
     }
     placeholder.remove();

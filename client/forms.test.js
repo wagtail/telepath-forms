@@ -77,6 +77,20 @@ describe('Form', () => {
     expect(boundForm.getValue()).toStrictEqual({name: "", email: "", secret: ""});
     expect(boundForm.getState()).toStrictEqual({name: "", email: "", secret: ""});
   });
+
+  it('can be rendered with initial state', () => {
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+
+    const boundForm = form.render(placeholder, "person", {
+      name: "Bob",
+      email: "bob@example.com",
+      secret: "12345",
+    });
+    expect(boundForm.getValue()).toStrictEqual({name: "Bob", email: "bob@example.com", secret: "12345"});
+    expect(boundForm.getState()).toStrictEqual({name: "Bob", email: "bob@example.com", secret: "12345"});
+    expect(boundForm.boundWidgets.name.getValue()).toBe("Bob");
+  });
 });
 
 
@@ -185,6 +199,26 @@ describe('Field', () => {
     document.body.appendChild(placeholder);
 
     const widget = field.renderAsFieldGroup(placeholder, "person", {"class": "form-control"});
+    expect(document.body.innerHTML).toMatchSnapshot();
+    expect(widget).toBeInstanceOf(BoundWidget);
+    expect(widget.getValue()).toBe("Bob");
+  });
+
+  it('can be rendered as a widget', () => {
+    const field = new Field({
+      name: "name",
+      id: "id_name",
+      label: "Name",
+      helpText: "Enter your name",
+      required: true,
+      widget: new Widget('<input type="text" name="__NAME__" id="__ID__">', {isHidden: false}),
+      initialState: "Bob",
+    });
+
+    const placeholder = document.createElement('div');
+    document.body.appendChild(placeholder);
+
+    const widget = field.renderWidget(placeholder, "person");
     expect(document.body.innerHTML).toMatchSnapshot();
     expect(widget).toBeInstanceOf(BoundWidget);
     expect(widget.getValue()).toBe("Bob");
