@@ -179,16 +179,15 @@ export class BoundFormSet {
 }
 
 export class FormSet {
-  constructor(form, prefix) {
+  constructor(form) {
     this.emptyForm = form;
-    this.prefix = prefix;
   }
 
-  bind(container) {
-    const formCount = parseInt(container.querySelector(`input[name="${this.prefix}-TOTAL_FORMS"]`).value, 10);
+  bind(container, prefix) {
+    const formCount = parseInt(container.querySelector(`input[name="${prefix}-TOTAL_FORMS"]`).value, 10);
     const boundForms = [];
     for (let i = 0; i < formCount; i++) {
-      const formPrefix = `${this.prefix}-${i}`;
+      const formPrefix = `${prefix}-${i}`;
       boundForms.push(this.emptyForm.bind(container, formPrefix));
     }
     return new BoundFormSet(boundForms);

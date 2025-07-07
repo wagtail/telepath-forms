@@ -96,7 +96,7 @@ describe('Form', () => {
 
 describe('FormSet', () => {
   it('can be bound', () => {
-    const formSet = new FormSet(form, "people");
+    const formSet = new FormSet(form);
 
     document.body.innerHTML = `
       <form>
@@ -113,7 +113,7 @@ describe('FormSet', () => {
       </form>
     `;
 
-    const boundFormSet = formSet.bind(document.body);
+    const boundFormSet = formSet.bind(document.body, "people");
     expect(boundFormSet.getValue()).toStrictEqual([
       {name: "Vic", email: "vic@example.com", secret: "12345"},
       {name: "Bob", email: "bob@example.com", secret: "67890"},

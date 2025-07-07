@@ -110,7 +110,6 @@ class FormSetAdapter(Adapter):
     def js_args(self, formset):
         return [
             formset.empty_form,
-            formset.prefix,
         ]
 
     class Media:
